@@ -2,7 +2,7 @@
 
 > **Real-world examples of shell-first serverless architecture**
 
-This repository contains production-ready examples demonstrating the [cloudless](https://github.com/ql4b/cloudless) philosophy: building high-performance serverless applications using shell scripts, achieving exceptional performance through fundamental simplicity.
+This repository contains production-ready examples demonstrating the [cloudless](https://cloudless.sh) philosophy: building high-performance serverless applications using shell scripts, achieving exceptional performance through fundamental simplicity.
 
 ## Why Shell-First?
 
