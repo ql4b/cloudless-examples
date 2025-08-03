@@ -1,0 +1,14 @@
+#!/bin/bash
+
+ROOT_PATH=$(realpath $(dirname "$0"))
+APP_PATH="$ROOT_PATH/app"
+ENV_FILENAME="$ROOT_PATH/.env"
+
+set -a
+. $ENV_FILENAME
+set +a
+
+# Build and push runtime image
+cd $APP_PATH
+docker build -t $(tf output -json runtime | jq -r .repository_url):latest .
+docker push $(tf output -json runtime | jq -r .repository_url):latest

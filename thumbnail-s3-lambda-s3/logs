@@ -1,0 +1,14 @@
+#!/bin/bash
+
+ROOT_PATH=$(realpath $(dirname "$0"))
+APP_PATH="$ROOT_PATH/app"
+ENV_FILENAME="$ROOT_PATH/.env"
+
+set -a
+. $ENV_FILENAME
+set +a
+
+export FUNCTION_NAME=$(tf output -json lambda  | jq -r .function_name)
+
+cd $APP_PATH/src
+make logs
