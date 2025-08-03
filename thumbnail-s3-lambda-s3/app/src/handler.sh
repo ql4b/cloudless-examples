@@ -1,8 +1,6 @@
 # shellcheck disable=SC2148
 # No shebang - this file should be sourced, not executed
 
-set -x
-
 echo "DEBUG: handler.sh" >&2
 
 # # Parse S3 event and extract bucket/key
