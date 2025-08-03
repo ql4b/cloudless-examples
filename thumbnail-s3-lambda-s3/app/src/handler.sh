@@ -1,7 +1,8 @@
 # shellcheck disable=SC2148
 # No shebang - this file should be sourced, not executed
 
-echo "DEBUG: handler.sh" >&2
+# shellcheck disable=SC1091
+# set -x
 
 # # Parse S3 event and extract bucket/key
 parse_s3_event() {
@@ -32,25 +33,27 @@ thumb() {
     local source_bucket="${bucket_key%|*}"
     local object_key="${bucket_key#*|}"
     
-    echo "Processing: s3://$source_bucket/$object_key" >&2
+
+    echo "Parsed bucket: $source_bucket, key: $object_key" >&2
     
     # # Download image from S3 using AWS CLI
     local input_file="/tmp/input_$(basename "$object_key")"
     echo "Downloading to: $input_file" >&2
 
-    aws s3 cp "s3://$source_bucket/$object_key" "$input_file" --cli-read-timeout 20 --cli-connect-timeout 10
+
+    aws s3 cp "s3://$source_bucket/$object_key" "$input_file" --cli-read-timeout 20 --cli-connect-timeout 10 >&2
     echo "Downloaded $(wc -c < "$input_file") bytes" >&2
 
     # # Generate thumbnail
     local thumbnail_file="/tmp/thumb_$(basename "$object_key")"
-    generate_thumbnail "$input_file"  "$thumbnail_file" "200"
+    generate_thumbnail "$input_file"  "$thumbnail_file" "200" >&2
     echo "Thumbnail generated: $thumbnail_file" >&2
     
     # # Upload thumbnail to destination bucket
     local thumbnails_bucket="${source_bucket/-source/-thumbnails}"
     local thumbnail_key="thumbnails/$object_key"
     
-    aws s3 cp "$thumbnail_file" "s3://$thumbnails_bucket/$thumbnail_key"
+    aws s3 cp "$thumbnail_file" "s3://$thumbnails_bucket/$thumbnail_key" >&2
     echo "Uploaded to: s3://$thumbnails_bucket/$thumbnail_key" >&2
     
     # Cleanup
