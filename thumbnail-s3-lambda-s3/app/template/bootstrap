@@ -1,0 +1,15 @@
+#!/bin/bash
+set -euo pipefail
+
+# AWS Lambda Runtime API bootstrap for provided.al2023
+while true; do
+  HEADERS="$(mktemp)"
+  EVENT_DATA=$(curl -sS -LD "$HEADERS" -X GET "http://${AWS_LAMBDA_RUNTIME_API}/2018-06-01/runtime/invocation/next")
+  REQUEST_ID=$(grep -Fi Lambda-Runtime-Aws-Request-Id "$HEADERS" | tr -d '[:space:]' | cut -d: -f2)
+  
+  # Execute your handler
+  RESPONSE=$(bash "${HANDLER:-/var/task/handler.sh}" "$EVENT_DATA")
+  
+  # Send response
+  curl -X POST "http://${AWS_LAMBDA_RUNTIME_API}/2018-06-01/runtime/invocation/$REQUEST_ID/response" -d "$RESPONSE"
+done
