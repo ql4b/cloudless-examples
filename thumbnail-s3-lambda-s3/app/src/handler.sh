@@ -33,12 +33,13 @@ thumb() {
     local source_bucket="${bucket_key%|*}"
     local object_key="${bucket_key#*|}"
     
+
     echo "Parsed bucket: $source_bucket, key: $object_key" >&2
-    echo "Processing: s3://$source_bucket/$object_key" >&2
     
     # # Download image from S3 using AWS CLI
     local input_file="/tmp/input_$(basename "$object_key")"
     echo "Downloading to: $input_file" >&2
+
 
     aws s3 cp "s3://$source_bucket/$object_key" "$input_file" --cli-read-timeout 20 --cli-connect-timeout 10 >&2
     echo "Downloaded $(wc -c < "$input_file") bytes" >&2
